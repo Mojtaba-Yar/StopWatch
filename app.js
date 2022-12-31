@@ -1,12 +1,13 @@
 var timer = document.createElement("div");
 var addTimer = document.getElementById("addTimer");
-addTimer === null || addTimer === void 0 ? void 0 : addTimer.addEventListener("click", function () {
-    render();
+addTimer.addEventListener("click", function () {
+    new Timer();
 });
 var Timer = /** @class */ (function () {
     function Timer() {
         this.duration = 0;
         this.status = "stoped";
+        render(this);
     }
     Timer.prototype.start = function () {
         if (this.status === "started") {
@@ -36,22 +37,21 @@ var Timer = /** @class */ (function () {
     };
     return Timer;
 }());
-var stopWatch1 = new Timer();
-function render() {
+function render(stopWatch) {
     var start = document.createElement("button");
     start.textContent = "Start";
     start.addEventListener("click", function () {
-        stopWatch1.start();
+        stopWatch.start();
     });
     var stop = document.createElement("button");
     stop.textContent = "Stop";
     stop.addEventListener("click", function () {
-        stopWatch1.stop();
+        stopWatch.stop();
     });
     var reset = document.createElement("button");
     reset.textContent = "Reset";
     reset.addEventListener("click", function () {
-        stopWatch1.reset();
+        stopWatch.reset();
     });
     timer.appendChild(start);
     timer.appendChild(stop);

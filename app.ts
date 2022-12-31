@@ -1,8 +1,9 @@
 let timer = document.createElement("div");
 let addTimer = document.getElementById("addTimer");
 addTimer?.addEventListener("click", () => {
-  render();
+  new Timer();
 });
+
 class Timer {
   private duration: number;
   private status: string;
@@ -10,6 +11,7 @@ class Timer {
   constructor() {
     this.duration = 0;
     this.status = "stoped";
+    render(this);
   }
   start() {
     if (this.status === "started") {
@@ -38,23 +40,22 @@ class Timer {
     this.duration = 0;
   }
 }
-const stopWatch1 = new Timer();
 
-function render() {
+function render(stopWatch) {
   let start = document.createElement("button");
   start.textContent = "Start";
   start.addEventListener("click", () => {
-    stopWatch1.start();
+    stopWatch.start();
   });
   let stop = document.createElement("button");
   stop.textContent = "Stop";
   stop.addEventListener("click", () => {
-    stopWatch1.stop();
+    stopWatch.stop();
   });
   let reset = document.createElement("button");
   reset.textContent = "Reset";
   reset.addEventListener("click", () => {
-    stopWatch1.reset();
+    stopWatch.reset();
   });
   timer.appendChild(start);
   timer.appendChild(stop);
