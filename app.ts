@@ -1,8 +1,4 @@
-let timerConsole = document.createElement("div");
-let timer = document.createElement("article");
-timerConsole.appendChild(timer);
 let addTimer = document.getElementById("addTimer");
-let sw;
 addTimer?.addEventListener("click", () => {
   new Timer();
 });
@@ -14,6 +10,7 @@ class Timer {
   constructor() {
     this._duration = 0;
     this._status = "stoped";
+    this._now = 0;
     render(this);
   }
   start() {
@@ -22,21 +19,13 @@ class Timer {
     }
     this._now = Date.now();
     this._status = "started";
-    const liveTime = () => {
-      this._duration = Number(((Date.now() - this._now) / 1000).toFixed(1));
-      timer.innerHTML = String(this._duration);
-      sw = setInterval(liveTime, 100);
-    };
-    liveTime();
   }
+
   stop() {
     if (this._status === "stoped") {
       throw "Timer is now stoped";
     }
-    clearInterval(sw);
-    sw = null;
     this._duration = Number(((Date.now() - this._now) / 1000).toFixed(1));
-    timer.innerHTML = String(this._duration);
     this._status = "stoped";
   }
   reset() {
@@ -44,25 +33,43 @@ class Timer {
       this.stop();
     }
     this._duration = 0;
-    timer.innerHTML = String(this._duration);
+  }
+  get getNow() {
+    return this._now;
+  }
+  get getDuration() {
+    return this._duration;
   }
 }
 
 function render(stopWatch: Timer) {
+  let sw: number;
+  let timerConsole = document.createElement("div");
+  let timer = document.createElement("article");
+  timerConsole.appendChild(timer);
   let start = document.createElement("button");
   start.textContent = "Start";
   start.addEventListener("click", () => {
     stopWatch.start();
+    sw = setInterval(() => {
+      timer.innerHTML = String(
+        Number((Date.now() - stopWatch.getNow / 1000).toFixed(1))
+      );
+    }, 100);
   });
   let stop = document.createElement("button");
   stop.textContent = "Stop";
   stop.addEventListener("click", () => {
     stopWatch.stop();
+    clearInterval(sw);
+    sw = 0;
+    timer.innerHTML = String(stopWatch.getDuration);
   });
   let reset = document.createElement("button");
   reset.textContent = "Reset";
   reset.addEventListener("click", () => {
     stopWatch.reset();
+    timer.innerHTML = String(stopWatch.getDuration);
   });
   timerConsole.appendChild(start);
   timerConsole.appendChild(stop);
