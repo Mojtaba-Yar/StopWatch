@@ -1,6 +1,6 @@
 var timer = document.createElement("div");
 var addTimer = document.getElementById("addTimer");
-addTimer.addEventListener("click", function () {
+addTimer === null || addTimer === void 0 ? void 0 : addTimer.addEventListener("click", function () {
     new Timer();
 });
 var Timer = /** @class */ (function () {
@@ -17,7 +17,7 @@ var Timer = /** @class */ (function () {
         this.status = "started";
         liveTime();
         function liveTime() {
-            timer.innerHTML = ((Date.now() - this.now) / 1000).toFixed(1);
+            timer.innerHTML += ((Date.now() - this.now) / 1000).toFixed(1);
             setInterval(liveTime, 100);
         }
     };

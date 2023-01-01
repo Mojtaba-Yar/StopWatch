@@ -21,7 +21,7 @@ class Timer {
     this.status = "started";
     liveTime();
     function liveTime() {
-      timer.innerHTML = ((Date.now() - this.now) / 1000).toFixed(1);
+      timer.innerHTML += ((Date.now() - this.now) / 1000).toFixed(1);
       setInterval(liveTime, 100);
     }
   }
