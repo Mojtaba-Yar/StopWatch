@@ -40,7 +40,8 @@ var Timer = /** @class */ (function () {
         start.addEventListener("click", function () {
             _this.start();
             sw = setInterval(function () {
-                timer.innerHTML = (Date.now() - _this._now / 1000).toFixed(1);
+                timer.innerHTML = ((Date.now() - _this._now) / 1000 +
+                    _this._duration).toFixed(1);
             }, 100);
         });
         var stop = document.createElement("button");

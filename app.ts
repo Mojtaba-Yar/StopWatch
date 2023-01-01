@@ -46,7 +46,10 @@ class Timer {
     start.addEventListener("click", () => {
       this.start();
       sw = setInterval(() => {
-        timer.innerHTML = (Date.now() - this._now / 1000).toFixed(1);
+        timer.innerHTML = (
+          (Date.now() - this._now) / 1000 +
+          this._duration
+        ).toFixed(1);
       }, 100);
     });
     let stop = document.createElement("button");
