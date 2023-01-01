@@ -8,43 +8,43 @@ addTimer?.addEventListener("click", () => {
 });
 
 class Timer {
-  private duration: number;
-  private status: string;
-  private now: number;
+  private _duration: number;
+  private _status: string;
+  private _now: number;
   constructor() {
-    this.duration = 0;
-    this.status = "stoped";
+    this._duration = 0;
+    this._status = "stoped";
     render(this);
   }
   start() {
-    if (this.status === "started") {
+    if (this._status === "started") {
       throw alert("Timer is now started");
     }
-    this.now = Date.now();
-    this.status = "started";
+    this._now = Date.now();
+    this._status = "started";
     const liveTime = () => {
-      this.duration = Number(((Date.now() - this.now) / 1000).toFixed(1));
-      timer.innerHTML = String(this.duration);
+      this._duration = Number(((Date.now() - this._now) / 1000).toFixed(1));
+      timer.innerHTML = String(this._duration);
       sw = setInterval(liveTime, 100);
     };
     liveTime();
   }
   stop() {
-    if (this.status === "stoped") {
+    if (this._status === "stoped") {
       throw "Timer is now stoped";
     }
     clearInterval(sw);
     sw = null;
-    this.duration = Number(((Date.now() - this.now) / 1000).toFixed(1));
-    timer.innerHTML = String(this.duration);
-    this.status = "stoped";
+    this._duration = Number(((Date.now() - this._now) / 1000).toFixed(1));
+    timer.innerHTML = String(this._duration);
+    this._status = "stoped";
   }
   reset() {
-    if (this.status === "started") {
+    if (this._status === "started") {
       this.stop();
     }
-    this.duration = 0;
-    timer.innerHTML = String(this.duration);
+    this._duration = 0;
+    timer.innerHTML = String(this._duration);
   }
 }
 

@@ -8,40 +8,40 @@ addTimer === null || addTimer === void 0 ? void 0 : addTimer.addEventListener("c
 });
 var Timer = /** @class */ (function () {
     function Timer() {
-        this.duration = 0;
-        this.status = "stoped";
+        this._duration = 0;
+        this._status = "stoped";
         render(this);
     }
     Timer.prototype.start = function () {
         var _this = this;
-        if (this.status === "started") {
+        if (this._status === "started") {
             throw alert("Timer is now started");
         }
-        this.now = Date.now();
-        this.status = "started";
+        this._now = Date.now();
+        this._status = "started";
         var liveTime = function () {
-            _this.duration = Number(((Date.now() - _this.now) / 1000).toFixed(1));
-            timer.innerHTML = String(_this.duration);
+            _this._duration = Number(((Date.now() - _this._now) / 1000).toFixed(1));
+            timer.innerHTML = String(_this._duration);
             sw = setInterval(liveTime, 100);
         };
         liveTime();
     };
     Timer.prototype.stop = function () {
-        if (this.status === "stoped") {
+        if (this._status === "stoped") {
             throw "Timer is now stoped";
         }
         clearInterval(sw);
         sw = null;
-        this.duration = Number(((Date.now() - this.now) / 1000).toFixed(1));
-        timer.innerHTML = String(this.duration);
-        this.status = "stoped";
+        this._duration = Number(((Date.now() - this._now) / 1000).toFixed(1));
+        timer.innerHTML = String(this._duration);
+        this._status = "stoped";
     };
     Timer.prototype.reset = function () {
-        if (this.status === "started") {
+        if (this._status === "started") {
             this.stop();
         }
-        this.duration = 0;
-        timer.innerHTML = String(this.duration);
+        this._duration = 0;
+        timer.innerHTML = String(this._duration);
     };
     return Timer;
 }());
