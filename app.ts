@@ -2,6 +2,7 @@ let timerConsole = document.createElement("div");
 let timer = document.createElement("article");
 timerConsole.appendChild(timer);
 let addTimer = document.getElementById("addTimer");
+let sw;
 addTimer?.addEventListener("click", () => {
   new Timer();
 });
@@ -22,20 +23,18 @@ class Timer {
     this.now = Date.now();
     this.status = "started";
     const liveTime = () => {
-      if (this.status === "stoped") {
-        this.stop();
-        throw console.error("timed stoped");
-      }
       this.duration = Number(((Date.now() - this.now) / 1000).toFixed(1));
       timer.innerHTML = String(this.duration);
-      setInterval(liveTime, 100);
+      sw = setInterval(liveTime, 100);
     };
     liveTime();
   }
   stop() {
     if (this.status === "stoped") {
-      throw alert("Timer is now stoped");
+      throw "Timer is now stoped";
     }
+    clearInterval(sw);
+    sw = null;
     this.duration = Number(((Date.now() - this.now) / 1000).toFixed(1));
     timer.innerHTML = String(this.duration);
     this.status = "stoped";
@@ -45,6 +44,7 @@ class Timer {
       this.stop();
     }
     this.duration = 0;
+    timer.innerHTML = String(this.duration);
   }
 }
 
