@@ -28,7 +28,7 @@ class Timer {
     }
     clearInterval(sw);
     this._duration = Number(
-      ((Date.now() - this._now) / 1000 + this._duration).toFixed(1)
+      ((Date.now() - this._now) / 1000 + this._duration).toFixed(2)
     );
     this._status = "stoped";
   }
@@ -47,10 +47,9 @@ class Timer {
     start.addEventListener("click", () => {
       this.start();
       sw = setInterval(() => {
-        timer.innerHTML = (
-          (Date.now() - this._now) / 1000 +
-          this._duration
-        ).toFixed(1);
+        timer.innerHTML = timeFormat(
+          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2))
+        );
       }, 100);
     });
     let stop = document.createElement("button");
@@ -72,4 +71,12 @@ class Timer {
     timerConsole.appendChild(reset);
     document.body.appendChild(timerConsole);
   }
+}
+
+function timeFormat(time: number) {
+ 
+  const second = Math.floor(time % 60);
+  const minute = Math.floor(time / 60);
+  const mili = time - Math.floor(time);
+  return `${minute}:${second}:${mili}`;
 }

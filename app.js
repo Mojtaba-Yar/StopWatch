@@ -19,10 +19,10 @@ var Timer = /** @class */ (function () {
     };
     Timer.prototype.stop = function () {
         if (this._status === "stoped") {
-            throw "Timer is now stoped";
+            throw alert("Timer is now stoped");
         }
         clearInterval(sw);
-        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1));
+        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2));
         this._status = "stoped";
     };
     Timer.prototype.reset = function () {
@@ -41,8 +41,7 @@ var Timer = /** @class */ (function () {
         start.addEventListener("click", function () {
             _this.start();
             sw = setInterval(function () {
-                timer.innerHTML = ((Date.now() - _this._now) / 1000 +
-                    _this._duration).toFixed(1);
+                timer.innerHTML = timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
             }, 100);
         });
         var stop = document.createElement("button");
@@ -66,3 +65,9 @@ var Timer = /** @class */ (function () {
     };
     return Timer;
 }());
+function timeFormat(time) {
+    var mili = time - Math.floor(time);
+    var second = Math.floor(time % 60);
+    var minute = Math.floor(time / 60);
+    return "".concat(minute, ":").concat(second, ":").concat(mili);
+}
