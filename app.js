@@ -1,4 +1,5 @@
 var addTimer = document.getElementById("addTimer");
+var sw;
 addTimer === null || addTimer === void 0 ? void 0 : addTimer.addEventListener("click", function () {
     new Timer();
 });
@@ -20,6 +21,7 @@ var Timer = /** @class */ (function () {
         if (this._status === "stoped") {
             throw "Timer is now stoped";
         }
+        clearInterval(sw);
         this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1));
         this._status = "stoped";
     };
@@ -31,7 +33,6 @@ var Timer = /** @class */ (function () {
     };
     Timer.prototype.render = function () {
         var _this = this;
-        var sw;
         var timerConsole = document.createElement("div");
         var timer = document.createElement("article");
         timerConsole.appendChild(timer);

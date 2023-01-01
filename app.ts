@@ -1,4 +1,5 @@
 let addTimer = document.getElementById("addTimer");
+let sw: number;
 addTimer?.addEventListener("click", () => {
   new Timer();
 });
@@ -23,8 +24,9 @@ class Timer {
 
   stop() {
     if (this._status === "stoped") {
-      throw "Timer is now stoped";
+      throw alert("Timer is now stoped");
     }
+    clearInterval(sw);
     this._duration = Number(
       ((Date.now() - this._now) / 1000 + this._duration).toFixed(1)
     );
@@ -37,7 +39,6 @@ class Timer {
     this._duration = 0;
   }
   render() {
-    let sw: number;
     let timerConsole = document.createElement("div");
     let timer = document.createElement("article");
     timerConsole.appendChild(timer);
