@@ -1,4 +1,6 @@
-let timer = document.createElement("div");
+let timerConsole = document.createElement("div");
+let timer = document.createElement("article");
+timerConsole.appendChild(timer);
 let addTimer = document.getElementById("addTimer");
 addTimer?.addEventListener("click", () => {
   new Timer();
@@ -19,18 +21,23 @@ class Timer {
     }
     this.now = Date.now();
     this.status = "started";
-    liveTime();
-    function liveTime() {
-      timer.innerHTML += ((Date.now() - this.now) / 1000).toFixed(1);
+    const liveTime = () => {
+      if (this.status === "stoped") {
+        this.stop();
+        throw console.error("timed stoped");
+      }
+      this.duration = Number(((Date.now() - this.now) / 1000).toFixed(1));
+      timer.innerHTML = String(this.duration);
       setInterval(liveTime, 100);
-    }
+    };
+    liveTime();
   }
   stop() {
     if (this.status === "stoped") {
       throw alert("Timer is now stoped");
     }
     this.duration = Number(((Date.now() - this.now) / 1000).toFixed(1));
-    console.log(this.duration);
+    timer.innerHTML = String(this.duration);
     this.status = "stoped";
   }
   reset() {
@@ -41,7 +48,7 @@ class Timer {
   }
 }
 
-function render(stopWatch) {
+function render(stopWatch: Timer) {
   let start = document.createElement("button");
   start.textContent = "Start";
   start.addEventListener("click", () => {
@@ -57,8 +64,8 @@ function render(stopWatch) {
   reset.addEventListener("click", () => {
     stopWatch.reset();
   });
-  timer.appendChild(start);
-  timer.appendChild(stop);
-  timer.appendChild(reset);
-  document.body.appendChild(timer);
+  timerConsole.appendChild(start);
+  timerConsole.appendChild(stop);
+  timerConsole.appendChild(reset);
+  document.body.appendChild(timerConsole);
 }
