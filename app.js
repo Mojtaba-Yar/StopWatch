@@ -7,7 +7,7 @@ var Timer = /** @class */ (function () {
         this._duration = 0;
         this._status = "stoped";
         this._now = 0;
-        render(this);
+        this.render();
     }
     Timer.prototype.start = function () {
         if (this._status === "started") {
@@ -20,7 +20,7 @@ var Timer = /** @class */ (function () {
         if (this._status === "stoped") {
             throw "Timer is now stoped";
         }
-        this._duration = Number(((Date.now() - this._now) / 1000).toFixed(1));
+        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1));
         this._status = "stoped";
     };
     Timer.prototype.reset = function () {
@@ -29,51 +29,38 @@ var Timer = /** @class */ (function () {
         }
         this._duration = 0;
     };
-    Object.defineProperty(Timer.prototype, "getNow", {
-        get: function () {
-            return this._now;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(Timer.prototype, "getDuration", {
-        get: function () {
-            return this._duration;
-        },
-        enumerable: false,
-        configurable: true
-    });
+    Timer.prototype.render = function () {
+        var _this = this;
+        var sw;
+        var timerConsole = document.createElement("div");
+        var timer = document.createElement("article");
+        timerConsole.appendChild(timer);
+        var start = document.createElement("button");
+        start.textContent = "Start";
+        start.addEventListener("click", function () {
+            _this.start();
+            sw = setInterval(function () {
+                timer.innerHTML = (Date.now() - _this._now / 1000).toFixed(1);
+            }, 100);
+        });
+        var stop = document.createElement("button");
+        stop.textContent = "Stop";
+        stop.addEventListener("click", function () {
+            _this.stop();
+            clearInterval(sw);
+            sw = 0;
+            timer.innerHTML = String(_this._duration);
+        });
+        var reset = document.createElement("button");
+        reset.textContent = "Reset";
+        reset.addEventListener("click", function () {
+            _this.reset();
+            timer.innerHTML = String(_this._duration);
+        });
+        timerConsole.appendChild(start);
+        timerConsole.appendChild(stop);
+        timerConsole.appendChild(reset);
+        document.body.appendChild(timerConsole);
+    };
     return Timer;
 }());
-function render(stopWatch) {
-    var sw;
-    var timerConsole = document.createElement("div");
-    var timer = document.createElement("article");
-    timerConsole.appendChild(timer);
-    var start = document.createElement("button");
-    start.textContent = "Start";
-    start.addEventListener("click", function () {
-        stopWatch.start();
-        sw = setInterval(function () {
-            timer.innerHTML = String(Number((Date.now() - stopWatch.getNow / 1000).toFixed(1)));
-        }, 100);
-    });
-    var stop = document.createElement("button");
-    stop.textContent = "Stop";
-    stop.addEventListener("click", function () {
-        stopWatch.stop();
-        clearInterval(sw);
-        sw = 0;
-        timer.innerHTML = String(stopWatch.getDuration);
-    });
-    var reset = document.createElement("button");
-    reset.textContent = "Reset";
-    reset.addEventListener("click", function () {
-        stopWatch.reset();
-        timer.innerHTML = String(stopWatch.getDuration);
-    });
-    timerConsole.appendChild(start);
-    timerConsole.appendChild(stop);
-    timerConsole.appendChild(reset);
-    document.body.appendChild(timerConsole);
-}
