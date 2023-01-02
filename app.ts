@@ -5,7 +5,7 @@ addTimer?.addEventListener("click", () => {
 });
 
 class Timer {
-  private _duration: number;
+  protected _duration: number;
   private _status: string;
   private _now: number;
   private _sw: number;
@@ -30,7 +30,7 @@ class Timer {
     }
     clearInterval(this._sw);
     this._duration = Number(
-      ((Date.now() - this._now) / 1000 + this._duration).toFixed(1)
+      ((Date.now() - this._now) / 1000 + this._duration).toFixed(2)
     );
     this._status = "stoped";
   }
@@ -49,8 +49,8 @@ class Timer {
     start.addEventListener("click", () => {
       this.start();
       this._sw = setInterval(() => {
-        timer.innerHTML = timeFormat(
-          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1))
+        timer.innerHTML = this.timeFormat(
+          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2))
         );
       }, 100);
     });
@@ -61,38 +61,55 @@ class Timer {
       console.log(this);
       clearInterval(this._sw);
       this._sw = 0;
-      timer.innerHTML = timeFormat(this._duration);
+      timer.innerHTML = this.timeFormat(this._duration);
     });
     let reset = document.createElement("button");
     reset.textContent = "Reset";
     reset.addEventListener("click", () => {
       this.reset();
-      timer.innerHTML = timeFormat(this._duration);
+      timer.innerHTML = this.timeFormat(this._duration);
     });
     timerConsole.appendChild(start);
     timerConsole.appendChild(stop);
     timerConsole.appendChild(reset);
     document.body.appendChild(timerConsole);
   }
+  timeFormat(time: number) {
+    const second = Math.floor(time % 60);
+    const minute = Math.floor(time / 60);
+    const str = String(time);
+    const float = str.split(".");
+    let mili: string = float[1];
+    if (mili === undefined) mili = "0";
+    let strSec: string = second < 10 ? `0${second}` : String(second);
+    let strMin: string = minute < 10 ? `0${minute}` : String(minute);
+    let strMili: string = Number(mili) < 10 ? `0${mili}` : String(mili);
+    return `${strMin}:${strSec}:${strMili}`;
+  }
 }
 
-function timeFormat(time: number) {
-  const second = Math.floor(time % 60);
-  const minute = Math.floor(time / 60);
-  const str = String(time);
-  const float = str.split(".");
-  let mili: string = float[1];
-  if (mili === undefined) mili = "0";
-  let strSec: string = second < 10 ? `0${second}` : String(second);
-  let strMin: string = minute < 10 ? `0${minute}` : String(minute);
-  return `${strMin}:${strSec}:${mili}`;
-}
 addTimerSet?.addEventListener("click", () => {
   new TimerSet();
 });
 class TimerSet extends Timer {
+  private _startTime: number;
   constructor() {
     super();
+    this._startTime = 0;
   }
-  addTime() {}
+  start(): void {
+    super.start();
+  }
+  render(): void {
+    super.render();
+    const setBox = document.createElement("input");
+    setBox.setAttribute("type", "text");
+    setBox.setAttribute("value", "0");
+    let timerConsoles = document.getElementsByName("div");
+    const length = timerConsoles.length;
+    let timerConsole = timerConsoles[length];
+    timerConsole.appendChild(setBox);
+    this._startTime = Number(setBox.value);
+    this._duration += this._startTime;
+  }
 }

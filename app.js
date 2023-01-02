@@ -57,7 +57,7 @@ var Timer = /** @class */ (function () {
         start.addEventListener("click", function () {
             _this.start();
             _this._sw = setInterval(function () {
-                timer.innerHTML = timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
+                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
             }, 100);
         });
         var stop = document.createElement("button");
@@ -67,41 +67,58 @@ var Timer = /** @class */ (function () {
             console.log(_this);
             clearInterval(_this._sw);
             _this._sw = 0;
-            timer.innerHTML = timeFormat(_this._duration);
+            timer.innerHTML = _this.timeFormat(_this._duration);
         });
         var reset = document.createElement("button");
         reset.textContent = "Reset";
         reset.addEventListener("click", function () {
             _this.reset();
-            timer.innerHTML = timeFormat(_this._duration);
+            timer.innerHTML = _this.timeFormat(_this._duration);
         });
         timerConsole.appendChild(start);
         timerConsole.appendChild(stop);
         timerConsole.appendChild(reset);
         document.body.appendChild(timerConsole);
     };
+    Timer.prototype.timeFormat = function (time) {
+        var second = Math.floor(time % 60);
+        var minute = Math.floor(time / 60);
+        var str = String(time);
+        var float = str.split(".");
+        var mili = float[1];
+        if (mili === undefined)
+            mili = "0";
+        var strSec = second < 10 ? "0".concat(second) : String(second);
+        var strMin = minute < 10 ? "0".concat(minute) : String(minute);
+        var strMili = Number(mili) < 10 ? "0".concat(mili) : String(mili);
+        return "".concat(strMin, ":").concat(strSec, ":").concat(strMili);
+    };
     return Timer;
 }());
-function timeFormat(time) {
-    var second = Math.floor(time % 60);
-    var minute = Math.floor(time / 60);
-    var str = String(time);
-    var float = str.split(".");
-    var mili = float[1];
-    if (mili === undefined)
-        mili = "0";
-    var strSec = second < 10 ? "0".concat(second) : String(second);
-    var strMin = minute < 10 ? "0".concat(minute) : String(minute);
-    return "".concat(strMin, ":").concat(strSec, ":").concat(mili);
-}
 addTimerSet === null || addTimerSet === void 0 ? void 0 : addTimerSet.addEventListener("click", function () {
     new TimerSet();
 });
 var TimerSet = /** @class */ (function (_super) {
     __extends(TimerSet, _super);
     function TimerSet() {
-        return _super.call(this) || this;
+        var _this = _super.call(this) || this;
+        _this._startTime = 0;
+        return _this;
     }
-    TimerSet.prototype.addTime = function () { };
+    TimerSet.prototype.start = function () {
+        _super.prototype.start.call(this);
+    };
+    TimerSet.prototype.render = function () {
+        _super.prototype.render.call(this);
+        var setBox = document.createElement("input");
+        setBox.setAttribute("type", "text");
+        setBox.setAttribute("value", "0");
+        var timerConsoles = document.getElementsByName("div");
+        var length = timerConsoles.length;
+        var timerConsole = timerConsoles[length];
+        timerConsole.appendChild(setBox);
+        this._startTime = Number(setBox.value);
+        this._duration += this._startTime;
+    };
     return TimerSet;
 }(Timer));
