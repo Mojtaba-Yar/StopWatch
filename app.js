@@ -38,7 +38,7 @@ var Timer = /** @class */ (function () {
             alert("Timer is now stoped");
         }
         clearInterval(this._sw);
-        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2));
+        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1));
         this._status = "stoped";
     };
     Timer.prototype.reset = function () {
@@ -57,7 +57,7 @@ var Timer = /** @class */ (function () {
         start.addEventListener("click", function () {
             _this.start();
             _this._sw = setInterval(function () {
-                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
+                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(1)));
             }, 100);
         });
         var stop = document.createElement("button");
@@ -90,8 +90,7 @@ var Timer = /** @class */ (function () {
             mili = "0";
         var strSec = second < 10 ? "0".concat(second) : String(second);
         var strMin = minute < 10 ? "0".concat(minute) : String(minute);
-        var strMili = Number(mili) < 10 ? "0".concat(mili) : String(mili);
-        return "".concat(strMin, ":").concat(strSec, ":").concat(strMili);
+        return "".concat(strMin, ":").concat(strSec, ":").concat(mili);
     };
     return Timer;
 }());
