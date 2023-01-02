@@ -9,7 +9,7 @@ class Timer {
   private _status: string;
   private _now: number;
   constructor() {
-    this._duration = 0;
+    this._duration = 0.0;
     this._status = "stoped";
     this._now = 0;
     this.render();
@@ -58,13 +58,13 @@ class Timer {
       this.stop();
       clearInterval(sw);
       sw = 0;
-      timer.innerHTML = String(this._duration);
+      timer.innerHTML = timeFormat(this._duration);
     });
     let reset = document.createElement("button");
     reset.textContent = "Reset";
     reset.addEventListener("click", () => {
       this.reset();
-      timer.innerHTML = String(this._duration);
+      timer.innerHTML = timeFormat(this._duration);
     });
     timerConsole.appendChild(start);
     timerConsole.appendChild(stop);
@@ -74,9 +74,14 @@ class Timer {
 }
 
 function timeFormat(time: number) {
- 
   const second = Math.floor(time % 60);
   const minute = Math.floor(time / 60);
-  const mili = time - Math.floor(time);
-  return `${minute}:${second}:${mili}`;
+  const str = String(time);
+  const float = str.split(".");
+  let mili: string = float[1];
+  if (mili === undefined) mili = "0";
+  let strSec: string = second < 10 ? `0${second}` : String(second);
+  let strMin: string = minute < 10 ? `0${minute}` : String(minute);
+  let strMili: string = Number(mili) < 10 ? `0${mili}` : String(mili);
+  return `${strMin}:${strSec}:${strMili}`;
 }

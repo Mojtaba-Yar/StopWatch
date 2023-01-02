@@ -5,7 +5,7 @@ addTimer === null || addTimer === void 0 ? void 0 : addTimer.addEventListener("c
 });
 var Timer = /** @class */ (function () {
     function Timer() {
-        this._duration = 0;
+        this._duration = 0.0;
         this._status = "stoped";
         this._now = 0;
         this.render();
@@ -50,13 +50,13 @@ var Timer = /** @class */ (function () {
             _this.stop();
             clearInterval(sw);
             sw = 0;
-            timer.innerHTML = String(_this._duration);
+            timer.innerHTML = timeFormat(_this._duration);
         });
         var reset = document.createElement("button");
         reset.textContent = "Reset";
         reset.addEventListener("click", function () {
             _this.reset();
-            timer.innerHTML = String(_this._duration);
+            timer.innerHTML = timeFormat(_this._duration);
         });
         timerConsole.appendChild(start);
         timerConsole.appendChild(stop);
@@ -66,8 +66,15 @@ var Timer = /** @class */ (function () {
     return Timer;
 }());
 function timeFormat(time) {
-    var mili = time - Math.floor(time);
     var second = Math.floor(time % 60);
     var minute = Math.floor(time / 60);
-    return "".concat(minute, ":").concat(second, ":").concat(mili);
+    var str = String(time);
+    var float = str.split(".");
+    var mili = float[1];
+    if (mili === undefined)
+        mili = "0";
+    var strSec = second < 10 ? "0".concat(second) : String(second);
+    var strMin = minute < 10 ? "0".concat(minute) : String(minute);
+    var strMili = Number(mili) < 10 ? "0".concat(mili) : String(mili);
+    return "".concat(strMin, ":").concat(strSec, ":").concat(strMili);
 }
