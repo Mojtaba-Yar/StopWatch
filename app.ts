@@ -1,5 +1,5 @@
 let addTimer = document.getElementById("addTimer");
-let sw: number;
+let addTimerSet = document.getElementById("addTimerSet");
 addTimer?.addEventListener("click", () => {
   new Timer();
 });
@@ -8,15 +8,17 @@ class Timer {
   private _duration: number;
   private _status: string;
   private _now: number;
+  private _sw: number;
   constructor() {
     this._duration = 0.0;
     this._status = "stoped";
     this._now = 0;
+    this._sw = 0;
     this.render();
   }
   start() {
     if (this._status === "started") {
-      throw alert("Timer is now started");
+      alert("Timer is now started");
     }
     this._now = Date.now();
     this._status = "started";
@@ -24,11 +26,11 @@ class Timer {
 
   stop() {
     if (this._status === "stoped") {
-      throw alert("Timer is now stoped");
+      alert("Timer is now stoped");
     }
-    clearInterval(sw);
+    clearInterval(this._sw);
     this._duration = Number(
-      ((Date.now() - this._now) / 1000 + this._duration).toFixed(2)
+      ((Date.now() - this._now) / 1000 + this._duration).toFixed(1)
     );
     this._status = "stoped";
   }
@@ -46,9 +48,9 @@ class Timer {
     start.textContent = "Start";
     start.addEventListener("click", () => {
       this.start();
-      sw = setInterval(() => {
+      this._sw = setInterval(() => {
         timer.innerHTML = timeFormat(
-          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2))
+          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1))
         );
       }, 100);
     });
@@ -56,8 +58,9 @@ class Timer {
     stop.textContent = "Stop";
     stop.addEventListener("click", () => {
       this.stop();
-      clearInterval(sw);
-      sw = 0;
+      console.log(this);
+      clearInterval(this._sw);
+      this._sw = 0;
       timer.innerHTML = timeFormat(this._duration);
     });
     let reset = document.createElement("button");
@@ -82,6 +85,14 @@ function timeFormat(time: number) {
   if (mili === undefined) mili = "0";
   let strSec: string = second < 10 ? `0${second}` : String(second);
   let strMin: string = minute < 10 ? `0${minute}` : String(minute);
-  let strMili: string = Number(mili) < 10 ? `0${mili}` : String(mili);
-  return `${strMin}:${strSec}:${strMili}`;
+  return `${strMin}:${strSec}:${mili}`;
+}
+addTimerSet?.addEventListener("click", () => {
+  new TimerSet();
+});
+class TimerSet extends Timer {
+  constructor() {
+    super();
+  }
+  addTime() {}
 }

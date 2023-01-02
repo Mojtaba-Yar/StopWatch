@@ -1,5 +1,20 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var addTimer = document.getElementById("addTimer");
-var sw;
+var addTimerSet = document.getElementById("addTimerSet");
 addTimer === null || addTimer === void 0 ? void 0 : addTimer.addEventListener("click", function () {
     new Timer();
 });
@@ -8,20 +23,21 @@ var Timer = /** @class */ (function () {
         this._duration = 0.0;
         this._status = "stoped";
         this._now = 0;
+        this._sw = 0;
         this.render();
     }
     Timer.prototype.start = function () {
         if (this._status === "started") {
-            throw alert("Timer is now started");
+            alert("Timer is now started");
         }
         this._now = Date.now();
         this._status = "started";
     };
     Timer.prototype.stop = function () {
         if (this._status === "stoped") {
-            throw alert("Timer is now stoped");
+            alert("Timer is now stoped");
         }
-        clearInterval(sw);
+        clearInterval(this._sw);
         this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2));
         this._status = "stoped";
     };
@@ -40,7 +56,7 @@ var Timer = /** @class */ (function () {
         start.textContent = "Start";
         start.addEventListener("click", function () {
             _this.start();
-            sw = setInterval(function () {
+            _this._sw = setInterval(function () {
                 timer.innerHTML = timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
             }, 100);
         });
@@ -48,8 +64,9 @@ var Timer = /** @class */ (function () {
         stop.textContent = "Stop";
         stop.addEventListener("click", function () {
             _this.stop();
-            clearInterval(sw);
-            sw = 0;
+            console.log(_this);
+            clearInterval(_this._sw);
+            _this._sw = 0;
             timer.innerHTML = timeFormat(_this._duration);
         });
         var reset = document.createElement("button");
@@ -75,6 +92,16 @@ function timeFormat(time) {
         mili = "0";
     var strSec = second < 10 ? "0".concat(second) : String(second);
     var strMin = minute < 10 ? "0".concat(minute) : String(minute);
-    var strMili = Number(mili) < 10 ? "0".concat(mili) : String(mili);
-    return "".concat(strMin, ":").concat(strSec, ":").concat(strMili);
+    return "".concat(strMin, ":").concat(strSec, ":").concat(mili);
 }
+addTimerSet === null || addTimerSet === void 0 ? void 0 : addTimerSet.addEventListener("click", function () {
+    new TimerSet();
+});
+var TimerSet = /** @class */ (function (_super) {
+    __extends(TimerSet, _super);
+    function TimerSet() {
+        return _super.call(this) || this;
+    }
+    TimerSet.prototype.addTime = function () { };
+    return TimerSet;
+}(Timer));
