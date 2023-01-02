@@ -30,7 +30,7 @@ class Timer {
     }
     clearInterval(this._sw);
     this._duration = Number(
-      ((Date.now() - this._now) / 1000 + this._duration).toFixed(2)
+      ((Date.now() - this._now) / 1000 + this._duration).toFixed(1)
     );
     this._status = "stoped";
   }
@@ -50,7 +50,7 @@ class Timer {
       this.start();
       this._sw = setInterval(() => {
         timer.innerHTML = this.timeFormat(
-          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2))
+          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1))
         );
       }, 100);
     });
@@ -83,8 +83,7 @@ class Timer {
     if (mili === undefined) mili = "0";
     let strSec: string = second < 10 ? `0${second}` : String(second);
     let strMin: string = minute < 10 ? `0${minute}` : String(minute);
-    let strMili: string = Number(mili) < 10 ? `0${mili}` : String(mili);
-    return `${strMin}:${strSec}:${strMili}`;
+    return `${strMin}:${strSec}:${mili}`;
   }
 }
 
