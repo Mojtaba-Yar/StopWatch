@@ -6,9 +6,9 @@ addTimer?.addEventListener("click", () => {
 
 class Timer {
   protected _duration: number;
-  private _status: string;
-  private _now: number;
-  private _sw: number;
+  protected _status: string;
+  protected _now: number;
+  protected _sw: number;
   constructor() {
     this._duration = 0.0;
     this._status = "stoped";
@@ -30,7 +30,7 @@ class Timer {
     }
     clearInterval(this._sw);
     this._duration = Number(
-      ((Date.now() - this._now) / 1000 + this._duration).toFixed(1)
+      ((Date.now() - this._now) / 1000 + this._duration).toFixed(2)
     );
     this._status = "stoped";
   }
@@ -41,8 +41,9 @@ class Timer {
     this._duration = 0;
   }
   render() {
-    let timerConsole = document.createElement("div");
-    let timer = document.createElement("article");
+    let timerConsole = document.createElement("article");
+    let timer = document.createElement("div");
+    timer.innerHTML = "00:00:00";
     timerConsole.appendChild(timer);
     let start = document.createElement("button");
     start.textContent = "Start";
@@ -50,7 +51,7 @@ class Timer {
       this.start();
       this._sw = setInterval(() => {
         timer.innerHTML = this.timeFormat(
-          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1))
+          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2))
         );
       }, 100);
     });
@@ -58,7 +59,6 @@ class Timer {
     stop.textContent = "Stop";
     stop.addEventListener("click", () => {
       this.stop();
-      console.log(this);
       clearInterval(this._sw);
       this._sw = 0;
       timer.innerHTML = this.timeFormat(this._duration);
@@ -96,19 +96,64 @@ class TimerSet extends Timer {
     super();
     this._startTime = 0;
   }
-  start(): void {
-    super.start();
-  }
   render(): void {
-    super.render();
+    let timerConsole = document.createElement("article");
     const setBox = document.createElement("input");
-    setBox.setAttribute("type", "text");
-    setBox.setAttribute("value", "0");
-    let timerConsoles = document.getElementsByName("div");
-    const length = timerConsoles.length;
-    let timerConsole = timerConsoles[length];
+    setBox.setAttribute("value", "00:00:00");
     timerConsole.appendChild(setBox);
-    this._startTime = Number(setBox.value);
-    this._duration += this._startTime;
+    let timer = document.createElement("div");
+    timer.innerHTML = "00:00:00";
+    timerConsole.appendChild(timer);
+    let start = document.createElement("button");
+    start.textContent = "Start";
+    start.addEventListener("click", () => {
+      this.start();
+
+      this._duration = this._duration + convertTime(setBox.value);
+      this._sw = setInterval(() => {
+        timer.innerHTML = this.timeFormat(
+          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2))
+        );
+      }, 100);
+    });
+    let stop = document.createElement("button");
+    stop.textContent = "Stop";
+    stop.addEventListener("click", () => {
+      this.stop();
+      clearInterval(this._sw);
+      this._sw = 0;
+      timer.innerHTML = this.timeFormat(this._duration);
+    });
+    let reset = document.createElement("button");
+    reset.textContent = "Reset";
+    reset.addEventListener("click", () => {
+      this.reset();
+      timer.innerHTML = this.timeFormat(this._duration);
+    });
+    timerConsole.appendChild(start);
+    timerConsole.appendChild(stop);
+    timerConsole.appendChild(reset);
+    document.body.appendChild(timerConsole);
   }
+}
+
+function convertTime(val: string) {
+  let timeIn = val.split(":");
+  const min = Number(timeIn[0]);
+  const sec = Number(timeIn[1]);
+  const mili = Number(timeIn[2]);
+  let timeAdd: number = 0;
+  if (0 <= min && min < 59) {
+    if (0 <= sec && sec < 59) {
+      if (0 <= mili && mili < 99) {
+        timeAdd = min * 60 + sec + mili * 0.01;
+      } else
+        alert(
+          "invalid value enter time by this format min:sec:mili 'mili 0-99'"
+        );
+    } else
+      alert("invalid value enter time by this format min:sec:mili 'sec 0-59'");
+  } else
+    alert("invalid value enter time by this format min:sec:mili 'min 0-59'");
+  return timeAdd;
 }

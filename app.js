@@ -38,7 +38,7 @@ var Timer = /** @class */ (function () {
             alert("Timer is now stoped");
         }
         clearInterval(this._sw);
-        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(1));
+        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2));
         this._status = "stoped";
     };
     Timer.prototype.reset = function () {
@@ -49,22 +49,22 @@ var Timer = /** @class */ (function () {
     };
     Timer.prototype.render = function () {
         var _this = this;
-        var timerConsole = document.createElement("div");
-        var timer = document.createElement("article");
+        var timerConsole = document.createElement("article");
+        var timer = document.createElement("div");
+        timer.innerHTML = "00:00:00";
         timerConsole.appendChild(timer);
         var start = document.createElement("button");
         start.textContent = "Start";
         start.addEventListener("click", function () {
             _this.start();
             _this._sw = setInterval(function () {
-                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(1)));
+                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
             }, 100);
         });
         var stop = document.createElement("button");
         stop.textContent = "Stop";
         stop.addEventListener("click", function () {
             _this.stop();
-            console.log(_this);
             clearInterval(_this._sw);
             _this._sw = 0;
             timer.innerHTML = _this.timeFormat(_this._duration);
@@ -104,20 +104,63 @@ var TimerSet = /** @class */ (function (_super) {
         _this._startTime = 0;
         return _this;
     }
-    TimerSet.prototype.start = function () {
-        _super.prototype.start.call(this);
-    };
     TimerSet.prototype.render = function () {
-        _super.prototype.render.call(this);
+        var _this = this;
+        var timerConsole = document.createElement("article");
         var setBox = document.createElement("input");
-        setBox.setAttribute("type", "text");
-        setBox.setAttribute("value", "0");
-        var timerConsoles = document.getElementsByName("div");
-        var length = timerConsoles.length;
-        var timerConsole = timerConsoles[length];
+        setBox.setAttribute("value", "00:00:00");
         timerConsole.appendChild(setBox);
-        this._startTime = Number(setBox.value);
-        this._duration += this._startTime;
+        var timer = document.createElement("div");
+        timer.innerHTML = "00:00:00";
+        timerConsole.appendChild(timer);
+        var start = document.createElement("button");
+        start.textContent = "Start";
+        start.addEventListener("click", function () {
+            _this.start();
+            _this._duration = _this._duration + convertTime(setBox.value);
+            _this._sw = setInterval(function () {
+                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
+            }, 100);
+        });
+        var stop = document.createElement("button");
+        stop.textContent = "Stop";
+        stop.addEventListener("click", function () {
+            _this.stop();
+            clearInterval(_this._sw);
+            _this._sw = 0;
+            timer.innerHTML = _this.timeFormat(_this._duration);
+        });
+        var reset = document.createElement("button");
+        reset.textContent = "Reset";
+        reset.addEventListener("click", function () {
+            _this.reset();
+            timer.innerHTML = _this.timeFormat(_this._duration);
+        });
+        timerConsole.appendChild(start);
+        timerConsole.appendChild(stop);
+        timerConsole.appendChild(reset);
+        document.body.appendChild(timerConsole);
     };
     return TimerSet;
 }(Timer));
+function convertTime(val) {
+    var timeIn = val.split(":");
+    var min = Number(timeIn[0]);
+    var sec = Number(timeIn[1]);
+    var mili = Number(timeIn[2]);
+    var timeAdd = 0;
+    if (0 <= min && min < 59) {
+        if (0 <= sec && sec < 59) {
+            if (0 <= mili && mili < 99) {
+                timeAdd = min * 60 + sec + mili * 0.01;
+            }
+            else
+                alert("invalid value enter time by this format min:sec:mili 'mili 0-99'");
+        }
+        else
+            alert("invalid value enter time by this format min:sec:mili 'sec 0-59'");
+    }
+    else
+        alert("invalid value enter time by this format min:sec:mili 'min 0-59'");
+    return timeAdd;
+}
