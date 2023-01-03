@@ -101,25 +101,48 @@ var TimerSet = /** @class */ (function (_super) {
     __extends(TimerSet, _super);
     function TimerSet() {
         var _this = _super.call(this) || this;
-        _this._startTime = 0;
+        _this._accurancy = 2;
         return _this;
     }
+    TimerSet.prototype.stop = function () {
+        if (this._status === "stoped") {
+            alert("Timer is now stoped");
+        }
+        clearInterval(this._sw);
+        this._duration = Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(this._accurancy));
+        this._status = "stoped";
+    };
     TimerSet.prototype.render = function () {
         var _this = this;
         var timerConsole = document.createElement("article");
         var setBox = document.createElement("input");
         setBox.setAttribute("value", "00:00:00");
         timerConsole.appendChild(setBox);
-        var timer = document.createElement("div");
+        var accPannel = document.createElement("div");
+        var acc01 = document.createElement("input");
+        acc01.type = "radio";
+        acc01.name = "accur";
+        accPannel.innerHTML += "Accuracy 0.1";
+        accPannel.appendChild(acc01);
+        var acc001 = document.createElement("input");
+        acc001.type = "radio";
+        acc001.name = "accur";
+        accPannel.innerHTML += "Accuracy 0.01";
+        accPannel.appendChild(acc001);
+        timerConsole.appendChild(accPannel);
+        var timer = document.createElement("section");
         timer.innerHTML = "00:00:00";
         timerConsole.appendChild(timer);
         var start = document.createElement("button");
         start.textContent = "Start";
+        if (acc01.checked) {
+            this._accurancy = 1;
+        }
         start.addEventListener("click", function () {
-            _this.start();
             _this._duration = _this._duration + convertTime(setBox.value);
+            _this.start();
             _this._sw = setInterval(function () {
-                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(2)));
+                timer.innerHTML = _this.timeFormat(Number(((Date.now() - _this._now) / 1000 + _this._duration).toFixed(_this._accurancy)));
             }, 100);
         });
         var stop = document.createElement("button");
@@ -149,18 +172,18 @@ function convertTime(val) {
     var sec = Number(timeIn[1]);
     var mili = Number(timeIn[2]);
     var timeAdd = 0;
-    if (0 <= min && min < 59) {
-        if (0 <= sec && sec < 59) {
-            if (0 <= mili && mili < 99) {
+    if (0 <= min && min <= 59) {
+        if (0 <= sec && sec <= 59) {
+            if (0 <= mili && mili <= 99) {
                 timeAdd = min * 60 + sec + mili * 0.01;
             }
             else
-                alert("invalid value enter time by this format min:sec:mili 'mili 0-99'");
+                throw new Error("enter time by this format min:sec:mili 'mili 0-99'");
         }
         else
-            alert("invalid value enter time by this format min:sec:mili 'sec 0-59'");
+            throw new Error("enter time by this format min:sec:mili 'sec 0-59'");
     }
     else
-        alert("invalid value enter time by this format min:sec:mili 'min 0-59'");
+        throw new Error("enter time by this format min:sec:mili 'min 0-59'");
     return timeAdd;
 }

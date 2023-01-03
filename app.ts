@@ -91,28 +91,66 @@ addTimerSet?.addEventListener("click", () => {
   new TimerSet();
 });
 class TimerSet extends Timer {
-  private _startTime: number;
+  private _accurancy: number;
   constructor() {
     super();
-    this._startTime = 0;
+    this._accurancy = 2;
+  }
+  stop(): void {
+    if (this._status === "stoped") {
+      alert("Timer is now stoped");
+    }
+    clearInterval(this._sw);
+    this._duration = Number(
+      ((Date.now() - this._now) / 1000 + this._duration).toFixed(
+        this._accurancy
+      )
+    );
+    this._status = "stoped";
   }
   render(): void {
     let timerConsole = document.createElement("article");
     const setBox = document.createElement("input");
     setBox.setAttribute("value", "00:00:00");
     timerConsole.appendChild(setBox);
-    let timer = document.createElement("div");
+
+    let accPannel = document.createElement("div");
+
+    let acc01 = document.createElement("input");
+    acc01.type = "radio";
+    acc01.name = "accur";
+    accPannel.innerHTML += "Accuracy 0.1";
+    accPannel.appendChild(acc01);
+
+    let acc001 = document.createElement("input");
+    acc001.type = "radio";
+    acc001.name = "accur";
+    accPannel.innerHTML += "Accuracy 0.01";
+    accPannel.appendChild(acc001);
+
+    timerConsole.appendChild(accPannel);
+
+    let timer = document.createElement("section");
     timer.innerHTML = "00:00:00";
     timerConsole.appendChild(timer);
     let start = document.createElement("button");
     start.textContent = "Start";
+
+    if (acc01.checked) {
+      this._accurancy = 1;
+    }
+
     start.addEventListener("click", () => {
+      this._duration = this._duration + convertTime(setBox.value);
       this.start();
 
-      this._duration = this._duration + convertTime(setBox.value);
       this._sw = setInterval(() => {
         timer.innerHTML = this.timeFormat(
-          Number(((Date.now() - this._now) / 1000 + this._duration).toFixed(2))
+          Number(
+            ((Date.now() - this._now) / 1000 + this._duration).toFixed(
+              this._accurancy
+            )
+          )
         );
       }, 100);
     });
@@ -143,17 +181,13 @@ function convertTime(val: string) {
   const sec = Number(timeIn[1]);
   const mili = Number(timeIn[2]);
   let timeAdd: number = 0;
-  if (0 <= min && min < 59) {
-    if (0 <= sec && sec < 59) {
-      if (0 <= mili && mili < 99) {
+  if (0 <= min && min <= 59) {
+    if (0 <= sec && sec <= 59) {
+      if (0 <= mili && mili <= 99) {
         timeAdd = min * 60 + sec + mili * 0.01;
       } else
-        alert(
-          "invalid value enter time by this format min:sec:mili 'mili 0-99'"
-        );
-    } else
-      alert("invalid value enter time by this format min:sec:mili 'sec 0-59'");
-  } else
-    alert("invalid value enter time by this format min:sec:mili 'min 0-59'");
+        throw new Error("enter time by this format min:sec:mili 'mili 0-99'");
+    } else throw new Error("enter time by this format min:sec:mili 'sec 0-59'");
+  } else throw new Error("enter time by this format min:sec:mili 'min 0-59'");
   return timeAdd;
 }
